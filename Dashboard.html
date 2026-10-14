@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard - HealthLeans</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js"></script>
+
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+  </style>
+</head>
+
+<body class="bg-gray-50 min-h-screen antialiased">
+
+  <!-- Navbar -->
+  <nav class="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <div class="flex items-center">
+            <img src="images/Healthleans image.png" alt="HealthLeans" class="h-10 w-auto">
+          </a>
+          <span class="ml-3 text-xl font-semibold text-blue-700">Health Dashboard</span>
+        </div>
+        <button id="logoutBtn" class="text-gray-700 hover:text-blue-600 font-medium">
+          <i class="fas fa-sign-out-alt mr-1"></i>
+          <a href="HealthLeans main page.html">Logout</a> 
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="flex flex-col md:flex-row">
+    <aside class="hidden md:block w-64 bg-white border-r border-gray-200 h-screen overflow-y-auto">
+      <nav class="p-6 space-y-2">
+        <a href="Dashboard.html" class="flex items-center px-4 py-3 text-blue-700 bg-blue-50 rounded-lg font-medium">
+          <i class="fas fa-home mr-3"></i> Dashboard
+        </a>
+        <a href="Log Data.html" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg">
+          <i class="fas fa-notes-medical mr-3"></i> Log Data
+        </a>
+        <a href="Progress.html" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg">
+          <i class="fas fa-chart-line mr-3"></i> Progress
+        </a>
+        <a href="Insights.html" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg">
+          <i class="fas fa-lightbulb mr-3"></i> Insights
+        </a>
+        
+      </nav>
+    </aside>
+
+    <main class="flex-1 p-6 lg:p-8">
+      <div class="mb-10">
+        <h1 class="text-3xl md:text-4xl font-bold text-gray-900">
+          Hello, <span id="name"></span>!
+        </h1>
+        <p class="mt-2 text-lg text-gray-600">Your exact situation → super personalized steps appear instantly.</p>
+      </div>
+
+      <!-- Health Profile -->
+      <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 mb-10">
+        <h2 class="text-xl font-semibold mb-4 flex items-center">
+          <i class="fas fa-heartbeat text-red-500 mr-3"></i> My Health Profile
+        </h2>
+        <p class="text-gray-600 mb-4">Select & answer → charts + **super detailed daily steps** appear instantly:</p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+          <label class="flex items-center space-x-2 cursor-pointer">
+            <input type="checkbox" id="diabetes" class="h-5 w-5 text-blue-600 rounded"> <span>Diabetes</span>
+          </label>
+          <label class="flex items-center space-x-2 cursor-pointer">
+            <input type="checkbox" id="obesity" class="h-5 w-5 text-blue-600 rounded"> <span>Obesity / Weight Goals</span>
+          </label>
+          <label class="flex items-center space-x-2 cursor-pointer">
+            <input type="checkbox" id="surgery" class="h-5 w-5 text-blue-600 rounded"> <span>Post-Surgery Recovery</span>
+          </label>
+          <label class="flex items-center space-x-2 cursor-pointer">
+            <input type="checkbox" id="other" class="h-5 w-5 text-blue-600 rounded"> <span>Other Condition</span>
+          </label>
+        </div>
+
+        <!-- Follow-up questions -->
+        <div id="diabetesDetails" class="hidden mt-6 p-4 bg-blue-50 rounded-lg">
+          <label class="block text-sm font-medium text-gray-700 mb-2">Diabetes type?</label>
+          <select id="diabetesType" class="w-full px-4 py-3 border rounded-lg focus:ring-blue-500">
+            <option value="">Select...</option>
+            <option value="type1">Type 1</option>
+            <option value="type2">Type 2</option>
+            <option value="gestational">Gestational</option>
+            <option value="other">Other / Unsure</option>
+          </select>
+        </div>
+
+        <div id="obesityDetails" class="hidden mt-6 p-4 bg-green-50 rounded-lg">
+          <label class="block text-sm font-medium text-gray-700 mb-2">Obesity class?</label>
+          <select id="obesityClass" class="w-full px-4 py-3 border rounded-lg focus:ring-blue-500">
+            <option value="">Select...</option>
+            <option value="class1">Class 1 (30-34.9)</option>
+            <option value="class2">Class 2 (35-39.9)</option>
+            <option value="class3">Class 3 / Severe (40+)</option>
+          </select>
+
+          <label class="block text-sm font-medium text-gray-700 mt-4 mb-2">Your main goal?</label>
+          <select id="weightGoal" class="w-full px-4 py-3 border rounded-lg focus:ring-blue-500">
+            <option value="">Select...</option>
+            <option value="lose">Lose weight overall</option>
+            <option value="energy">Improve energy & health</option>
+            <option value="specific">Reach specific weight/BMI</option>
+            <option value="maintain">Maintain current progress</option>
+          </select>
+        </div>
+
+        <div id="surgeryDetails" class="hidden mt-6 p-4 bg-purple-50 rounded-lg">
+          <label class="block text-sm font-medium text-gray-700 mb-2">Type of surgery?</label>
+          <select id="surgeryType" class="w-full px-4 py-3 border rounded-lg focus:ring-blue-500">
+            <option value="">Select...</option>
+            <option value="sleeve">Gastric Sleeve</option>
+            <option value="bypass">Gastric Bypass</option>
+            <option value="band">Gastric Band</option>
+            <option value="switch">Duodenal Switch</option>
+            <option value="other">Other / Revisional</option>
+          </select>
+        </div>
+
+        <div id="otherDetails" class="hidden mt-6 p-4 bg-gray-50 rounded-lg">
+          <label class="block text-sm font-medium text-gray-700 mb-2">Describe your situation:</label>
+          <textarea id="otherDescription" rows="2" class="w-full px-4 py-3 border rounded-lg focus:ring-blue-500" placeholder="e.g. hypertension, hypothyroidism, PCOS, fatty liver..."></textarea>
+        </div>
+      </div>
+
+      <!--Save and Reset buttons-->
+      <div class="mt-8 flex justify-end space-x-4">
+        <button id="resetProfileBtn" class="px-5 py-2.5 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition font-medium">
+          Reset Profile
+        </button>
+
+        <button id="saveProfileBtn" class="px-6 py-2.5 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition shadow-sm">
+          Save Health Profile
+        </button>
+      </div>
+
+      <p class="text-sm text-gray-500 mt-4 italic">
+        This saves your health conditions & profile (updates recommendations instantly).
+        Daily measurements go on the <a href="Log Data.html" class="text-blue-600 hover:underline">Log Data page</a>.
+      </p>
+
+      <!-- Charts -->
+      <div id="conditionCharts" class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10"></div>
+
+      <!-- SUPER PERSONALIZED STEPS -->
+      <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+        <h3 class="text-xl font-bold mb-6 flex items-center">
+          <i class="fas fa-lightbulb text-yellow-500 mr-3"></i> Personalized Steps You Can Take Today
+        </h3>
+        <div id="recommendations" class="space-y-6 text-gray-700"></div>
+        <p class="mt-8 text-sm text-gray-500 italic text-center">
+          These are practical, realistic daily steps tailored to your exact situation.<br>
+          <strong>Not medical advice.</strong> Always consult your doctor before any changes.
+        </p>
+      </div>
+    </main>
+  </div>
+
+  <!-- Professional Reset Confirmation Modal -->
+  <div id="resetModal" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center z-[9999]">
+    <div class="bg-white rounded-2xl shadow-xl max-w-md w-full mx-4 p-8">
+      <h3 class="text-2xl font-semibold text-gray-900 mb-2">Reset Profile?</h3>
+      <p class="text-gray-600 mb-8">This will permanently delete all your saved health conditions, personalized recommendations, **and all logged data** in Progress. This action cannot be undone.</p>
+      
+      <div class="flex gap-4">
+        <button id="cancelReset" 
+                class="flex-1 py-3.5 text-gray-700 font-medium border border-gray-300 rounded-xl hover:bg-gray-50 transition">
+          Cancel
+        </button>
+        <button id="confirmReset" 
+                class="flex-1 py-3.5 bg-red-600 text-white font-medium rounded-xl hover:bg-red-700 transition">
+          Yes, Reset Everything
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  // User name from signup
+  const savedName = localStorage.getItem('userName');
+  if (savedName) {
+    document.getElementById('name').textContent = savedName;
+  } else {
+    document.getElementById('name').textContent = 'there';
+  }
+
+  // Logout - FIXED
+  document.getElementById('logoutBtn').addEventListener('click', () => {
+    localStorage.removeItem('token');
+    window.location.href = 'HealthLeans main page.html';
+  });
+
+  function updateEverything() {
+    document.getElementById('diabetesDetails').classList.toggle('hidden', !document.getElementById('diabetes').checked);
+    document.getElementById('obesityDetails').classList.toggle('hidden', !document.getElementById('obesity').checked);
+    document.getElementById('surgeryDetails').classList.toggle('hidden', !document.getElementById('surgery').checked);
+    document.getElementById('otherDetails').classList.toggle('hidden', !document.getElementById('other').checked);
+
+    renderCharts();
+    renderSuperPersonalizedSteps();
+  }
+
+  function renderCharts() {
+    const container = document.getElementById('conditionCharts');
+    container.innerHTML = '';
+
+    if (document.getElementById('diabetes').checked) {
+      container.innerHTML += `<div class="bg-white p-6 rounded-xl shadow-sm border"><h3 class="font-semibold mb-4">Blood Glucose Trend</h3><canvas id="dChart" height="180"></canvas></div>`;
+      new Chart(document.getElementById('dChart'), { type: 'line', data: { labels: ['Mon','Tue','Wed','Thu','Fri'], datasets: [{ label: 'mg/dL', data: [142,128,135,119,124], borderColor: '#3b82f6', tension: 0.3 }] }, options: { responsive: true }});
+    }
+    if (document.getElementById('obesity').checked) {
+      container.innerHTML += `<div class="bg-white p-6 rounded-xl shadow-sm border"><h3 class="font-semibold mb-4">Weight Progress</h3><canvas id="oChart" height="180"></canvas></div>`;
+      new Chart(document.getElementById('oChart'), { type: 'line', data: { labels: ['Jan','Feb','Mar','Apr','May'], datasets: [{ label: 'kg', data: [102,99,96,93,90], borderColor: '#10b981', tension: 0.3 }] }, options: { responsive: true }});
+    }
+    if (document.getElementById('surgery').checked) {
+      container.innerHTML += `<div class="bg-white p-6 rounded-xl shadow-sm border"><h3 class="font-semibold mb-4">Protein Intake Progress</h3><canvas id="sChart" height="180"></canvas></div>`;
+      new Chart(document.getElementById('sChart'), { type: 'bar', data: { labels: ['Week1','Week2','Week3','Week4'], datasets: [{ label: 'g/day', data: [45,68,82,95], backgroundColor: '#8b5cf6' }] }, options: { responsive: true }});
+    }
+  }
+
+  function renderSuperPersonalizedSteps() {
+    const recDiv = document.getElementById('recommendations');
+    let html = '';
+
+    const diabetes = document.getElementById('diabetes').checked;
+    const obesity  = document.getElementById('obesity').checked;
+    const surgery  = document.getElementById('surgery').checked;
+    const other    = document.getElementById('other').checked;
+
+    const dType     = document.getElementById('diabetesType').value;
+    const oClass    = document.getElementById('obesityClass').value;
+    const wGoal     = document.getElementById('weightGoal').value;
+    const sType     = document.getElementById('surgeryType').value;
+    const otherDesc = document.getElementById('otherDescription').value.trim() || 'your condition';
+
+    if (!diabetes && !obesity && !surgery && !other) {
+      recDiv.innerHTML = '<p class="italic text-center">Select your conditions to unlock super personalized daily steps.</p>';
+      return;
+    }
+      
+    // DIABETES
+    if (diabetes) {
+      let title = dType === 'type1' ? 'Type 1 Diabetes' : dType === 'type2' ? 'Type 2 Diabetes' : dType === 'gestational' ? 'Gestational Diabetes' : 'Diabetes';
+      let steps = '';
+      let foodsEat = '';
+      let foodsAvoid = '';
+
+      if (dType === 'type1') {
+        steps = `<li>Count carbs accurately before every meal</li><li>Always carry fast-acting glucose</li><li>Check glucose before driving or exercising</li><li>Keep a consistent insulin-to-carb ratio</li>`;
+        foodsEat = 'non-starchy vegetables, lean proteins, low-GI fruits';
+        foodsAvoid = 'sugary drinks, sweets, large carb portions';
+      } else if (dType === 'type2') {
+        steps = `<li>Focus on reversing insulin resistance with diet & movement</li><li>Fill half your plate with non-starchy vegetables</li><li>Walk 10-15 minutes after every main meal</li>`;
+        foodsEat = 'non-starchy veggies, lean proteins, healthy fats';
+        foodsAvoid = 'sugary drinks, white bread/rice/pasta';
+      } else {
+        steps = `<li>Focus on whole foods and consistent movement</li>`;
+        foodsEat = 'vegetables, lean proteins, healthy fats';
+        foodsAvoid = 'sugary and highly processed foods';
+      }
+
+      html += `<div class="border-l-4 border-blue-500 pl-4"><strong>${title} - Personalized Steps You Can Take Today:</strong><ul class="list-disc pl-6 mt-3 space-y-2">${steps}</ul><p class="mt-4 font-medium">Foods to prioritize: <span class="text-green-700">${foodsEat}</span></p><p class="font-medium">Foods to limit/avoid: <span class="text-red-700">${foodsAvoid}</span></p></div>`;
+    }
+
+    // OBESITY
+    if (obesity) {
+      let classText = oClass === 'class3' ? 'Class 3 (Severe)' : oClass === 'class2' ? 'Class 2' : 'Class 1';
+      let goalText = wGoal === 'lose' ? 'to lose weight steadily' : wGoal === 'energy' ? 'to boost energy & health' : 'to reach your target';
+
+      let steps = `<li>Protein in every meal (aim 80-120g daily)</li><li>Drink 500ml water 30 minutes before every meal</li><li>Walk 30 minutes daily</li>`;
+      let foodsEat = 'lean proteins, non-starchy vegetables, healthy fats';
+      let foodsAvoid = 'sugary drinks, fried foods, processed snacks';
+
+      html += `<div class="border-l-4 border-green-500 pl-4"><strong>Obesity / Weight Goals (${classText}) - Steps to ${goalText}:</strong><ul class="list-disc pl-6 mt-3 space-y-2">${steps}</ul><p class="mt-4 font-medium">Foods to prioritize: <span class="text-green-700">${foodsEat}</span></p><p class="font-medium">Foods to limit/avoid: <span class="text-red-700">${foodsAvoid}</span></p></div>`;
+    }
+
+    // POST-SURGERY
+    if (surgery) {
+      let steps = `<li>Focus on high-protein small meals</li><li>Sip water constantly</li><li>Chew slowly (20-30 times per bite)</li>`;
+      let foodsEat = 'lean proteins, pureed/soft vegetables';
+      let foodsAvoid = 'carbonated drinks, tough meats, high-sugar items';
+
+      html += `<div class="border-l-4 border-purple-500 pl-4"><strong>Post-Surgery Recovery - Daily Steps:</strong><ul class="list-disc pl-6 mt-3 space-y-2">${steps}</ul><p class="mt-4 font-medium">Foods to prioritize: <span class="text-green-700">${foodsEat}</span></p><p class="font-medium">Foods to avoid: <span class="text-red-700">${foodsAvoid}</span></p></div>`;
+    }
+
+    recDiv.innerHTML = html;
+  }
+
+  const PROFILE_KEY = 'healthleans_profile';
+
+  function loadSavedProfile() {
+    const saved = localStorage.getItem(PROFILE_KEY);
+    if (!saved) return;
+    try {
+      const data = JSON.parse(saved);
+      document.getElementById('diabetes').checked  = !!data.diabetes;
+      document.getElementById('obesity').checked   = !!data.obesity;
+      document.getElementById('surgery').checked   = !!data.surgery;
+      document.getElementById('other').checked     = !!data.other;
+
+      if (data.diabetesType) document.getElementById('diabetesType').value = data.diabetesType;
+      if (data.obesityClass) document.getElementById('obesityClass').value = data.obesityClass;
+      if (data.weightGoal)   document.getElementById('weightGoal').value   = data.weightGoal;
+      if (data.surgeryType)  document.getElementById('surgeryType').value  = data.surgeryType;
+      if (data.otherDescription) document.getElementById('otherDescription').value = data.otherDescription;
+
+      updateEverything();
+    } catch (e) {}
+  }
+
+  function saveProfile() {
+    const data = {
+      diabetes: document.getElementById('diabetes').checked,
+      obesity: document.getElementById('obesity').checked,
+      surgery: document.getElementById('surgery').checked,
+      other: document.getElementById('other').checked,
+      diabetesType: document.getElementById('diabetesType')?.value || '',
+      obesityClass: document.getElementById('obesityClass')?.value || '',
+      weightGoal: document.getElementById('weightGoal')?.value || '',
+      surgeryType: document.getElementById('surgeryType')?.value || '',
+      otherDescription: document.getElementById('otherDescription')?.value?.trim() || ''
+    };
+    localStorage.setItem(PROFILE_KEY, JSON.stringify(data));
+
+    const btn = document.getElementById('saveProfileBtn');
+    const original = btn.innerHTML;
+    btn.innerHTML = 'Saved!';
+    btn.classList.add('bg-green-600');
+    setTimeout(() => {
+      btn.innerHTML = original;
+      btn.classList.remove('bg-green-600');
+    }, 1800);
+  }
+
+  function resetProfile() {
+    const modal = document.getElementById('resetModal');
+    modal.classList.remove('hidden');
+
+    document.getElementById('confirmReset').onclick = () => {
+      localStorage.removeItem(PROFILE_KEY);
+      localStorage.removeItem('healthLogs');   // ←←← THIS IS THE FIX
+
+      ['diabetes','obesity','surgery','other'].forEach(id => {
+        document.getElementById(id).checked = false;
+      });
+
+      ['diabetesType','obesityClass','weightGoal','surgeryType'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+      });
+
+      const ta = document.getElementById('otherDescription');
+      if (ta) ta.value = '';
+
+      updateEverything();
+      modal.classList.add('hidden');
+    };
+
+    document.getElementById('cancelReset').onclick = () => modal.classList.add('hidden');
+  }
+  
+  // Live listeners
+  ['diabetes','obesity','surgery','other'].forEach(id => {
+    document.getElementById(id).addEventListener('change', updateEverything);
+  });
+  ['diabetesType','obesityClass','weightGoal','surgeryType','otherDescription'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('change', updateEverything);
+    if (el && el.tagName === 'TEXTAREA') el.addEventListener('input', updateEverything);
+  });
+
+  document.getElementById('saveProfileBtn')?.addEventListener('click', saveProfile);
+  document.getElementById('resetProfileBtn')?.addEventListener('click', resetProfile);
+
+  window.addEventListener('load', loadSavedProfile);
+  updateEverything();
+</script>
+</body>
+</html>
